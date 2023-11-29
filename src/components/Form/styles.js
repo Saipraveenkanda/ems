@@ -2,16 +2,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-    marginTop: theme.spacing(4),
-    backgroundColor: "#ffffff",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100vw",
-    // eslint-disable-next-line no-dupe-keys
-    marginTop: 0,
+    backgroundColor: "#fff",
+    minWidth: "99vw",
   },
   form: {
     width: "100%",
@@ -24,16 +16,22 @@ const useStyles = makeStyles((theme) => ({
   },
   mainFormContainer: {
     backgroundColor: "#1365f260",
-    padding: "10px",
+    padding: "12px",
     boxSizing: "border-box",
+    gap: 12,
   },
   groupContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     borderRadius: 4,
     padding: "10px",
-    boxSizing: "border-box",
-    marginBottom: "14px",
+  },
+  buttonGroup: {
     display: "flex",
+    justifyContent: "space-evenly",
+    gap: 2,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
 }));
+
 export default useStyles;

@@ -1,20 +1,24 @@
 import { useState } from "react";
+import useStyles from "./styles";
 import {
+  Avatar,
+  Stack,
   TextField,
   Button,
   Container,
   Grid,
   Typography,
-} from "@material-ui/core";
-import useStyles from "./styles";
-import { Avatar, ButtonGroup, Stack } from "@mui/material";
+  Box,
+} from "@mui/material";
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
+import NoPhotographyOutlinedIcon from "@mui/icons-material/NoPhotographyOutlined";
 
 const App = () => {
   const classes = useStyles();
   const getLocalStorageItem = JSON.parse(localStorage.getItem("userDetails"));
   // console.log(getLocalStorageItem);
 
+  // STATE TO MAINTAIN ALL VALUES
   const [employeeDetails, setEmployeeDetails] = useState(
     getLocalStorageItem !== null
       ? getLocalStorageItem
@@ -49,6 +53,7 @@ const App = () => {
     });
   };
 
+  // PROFILE IMAGE UPLOADING...
   const handleImageUpload = async (e) => {
     console.log(e.target.files[0]);
     const file = e.target.files[0];
@@ -59,6 +64,7 @@ const App = () => {
     });
   };
 
+  // CONVERTING TO BASE64 FORMAT
   function convertToBase64(file) {
     return new Promise((resolve, reject) => {
       const fileReader = new FileReader();
@@ -72,6 +78,7 @@ const App = () => {
     });
   }
 
+  //SAVING DATA TO LOCALSTORAGE
   const handleSaveButton = () => {
     /* if(!employeeDetails.name || !employeeDetails.address || !employeeDetails.phoneNumber||!employeeDetails.email||!employeeDetails){
       if(!employeeDetails.phoneNumber || !employeeDetails.email || !employeeDetails.maritalStatus ||!employeeDetails.jobTitle){
@@ -83,15 +90,21 @@ const App = () => {
     localStorage.setItem("userDetails", JSON.stringify(employeeDetails));
   };
 
+  //SUBMITTING THE DATA TO BACKEND
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Add logic to handle form submission
     console.log("Submitted:", employeeDetails);
   };
 
   return (
-    <Container className={classes.root}>
-      <Typography variant="h6" align="center" color="primary" gutterBottom>
+    <Container className={classes.root} fixed>
+      <Typography
+        variant="h6"
+        align="center"
+        color="primary"
+        gutterBottom
+        mb={2}
+      >
         Employee Details Form
       </Typography>
       <Grid container justify="center">
@@ -127,20 +140,25 @@ const App = () => {
                       : ""
                   }
                 />
-                <Button
-                  component="label"
-                  htmlFor="userImage"
-                  startIcon={<PhotoCameraOutlinedIcon />}
-                >
-                  Upload image
-                </Button>
-                <Button
-                  onClick={() =>
-                    setEmployeeDetails({ ...employeeDetails, userImage: "" })
-                  }
-                >
-                  Remove profile image
-                </Button>
+                <Stack direction={"column"}>
+                  <Button
+                    size="small"
+                    component="label"
+                    htmlFor="userImage"
+                    startIcon={<PhotoCameraOutlinedIcon />}
+                  >
+                    Upload image
+                  </Button>
+                  <Button
+                    size="small"
+                    startIcon={<NoPhotographyOutlinedIcon />}
+                    onClick={() =>
+                      setEmployeeDetails({ ...employeeDetails, userImage: "" })
+                    }
+                  >
+                    Remove image
+                  </Button>
+                </Stack>
 
                 <input
                   type={"file"}
@@ -401,17 +419,8 @@ const App = () => {
                 />
               </Grid>
             </Grid>
-
-            {/* Add more fields as needed */}
           </Grid>
-          <ButtonGroup
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 1,
-              padding: "0",
-            }}
-          >
+          <Box className={classes.buttonGroup}>
             <Button
               type="button"
               variant="outlined"
@@ -431,7 +440,7 @@ const App = () => {
             >
               Submit
             </Button>
-          </ButtonGroup>
+          </Box>
         </form>
       </Grid>
     </Container>
