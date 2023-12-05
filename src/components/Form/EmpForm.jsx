@@ -11,12 +11,27 @@ import {
   Box,
 } from "@mui/material";
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
-import NoPhotographyOutlinedIcon from "@mui/icons-material/NoPhotographyOutlined";
 
 const App = () => {
   const classes = useStyles();
   const getLocalStorageItem = JSON.parse(localStorage.getItem("userDetails"));
   // console.log(getLocalStorageItem);
+
+  //get user location
+  if ("geolocation" in navigator) {
+    // Request the user's location
+    navigator.geolocation.getCurrentPosition(
+      // Success callback
+      function (position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        // Use the latitude and longitude as needed
+        console.log("Latitude: " + latitude);
+        console.log("Longitude: " + longitude);
+      }
+    );
+  }
 
   // STATE TO MAINTAIN ALL VALUES
   const [employeeDetails, setEmployeeDetails] = useState(
@@ -80,13 +95,6 @@ const App = () => {
 
   //SAVING DATA TO LOCALSTORAGE
   const handleSaveButton = () => {
-    /* if(!employeeDetails.name || !employeeDetails.address || !employeeDetails.phoneNumber||!employeeDetails.email||!employeeDetails){
-      if(!employeeDetails.phoneNumber || !employeeDetails.email || !employeeDetails.maritalStatus ||!employeeDetails.jobTitle){
-        if(!validateForm()){
-          alert("Please check the fields")
-      }
-    }
-  } */
     localStorage.setItem("userDetails", JSON.stringify(employeeDetails));
   };
 
@@ -97,353 +105,348 @@ const App = () => {
   };
 
   return (
-    <Container className={classes.root} fixed>
-      <Typography
-        variant="h6"
-        align="center"
-        color="primary"
-        gutterBottom
-        mb={2}
-      >
-        Employee Details Form
-      </Typography>
-      <Grid container justify="center">
-        <form
-          className={classes.form}
-          onSubmit={handleSubmit}
-          style={{ backgroundColor: "#fff", color: "#000" }}
+    <Box>
+      <form className={classes.form} onSubmit={handleSubmit}>
+        <Typography
+          variant="h6"
+          align="center"
+          color="primary"
+          gutterBottom
+          mb={2}
         >
-          <Grid container spacing={2} className={classes.mainFormContainer}>
-            {/* PERSONAL INFORMATION */}
-            <Grid container spacing={1} className={classes.groupContainer}>
-              <Typography
-                variant="body2"
-                gutterBottom
-                style={{ fontWeight: "bold", paddingLeft: 4 }}
-              >
-                Personal Information
-              </Typography>
-
-              {/* USER PROFILE PICTURE */}
-              <Stack
-                sx={{ height: "120px", width: "100%" }}
-                direction={"row"}
-                alignItems="center"
-                spacing={2}
-              >
-                <Avatar
-                  sx={{ width: 100, height: 100 }}
-                  alt="profile image"
-                  src={
-                    employeeDetails.userImage !== ""
-                      ? employeeDetails.userImage
-                      : ""
+          Employee Details Form
+        </Typography>
+        <Grid container className={classes.mainFormContainer}>
+          {/* PERSONAL INFORMATION */}
+          <Typography variant="body2" gutterBottom fontWeight={600}>
+            Personal Information
+          </Typography>
+          <Grid
+            container
+            item
+            className={classes.groupContainer}
+            rowSpacing={1.5}
+            columnSpacing={0}
+          >
+            {/* USER PROFILE PICTURE */}
+            <Stack
+              sx={{ height: "120px", width: "100%" }}
+              direction={"row"}
+              alignItems="center"
+              spacing={2}
+            >
+              <Avatar
+                sx={{ width: 100, height: 100 }}
+                alt="profile image"
+                src={
+                  employeeDetails.userImage !== ""
+                    ? employeeDetails.userImage
+                    : ""
+                }
+              />
+              <Stack direction={"column"} spacing={1} alignItems={"center"}>
+                <Button
+                  variant="contained"
+                  size="small"
+                  component="label"
+                  htmlFor="userImage"
+                  startIcon={<PhotoCameraOutlinedIcon />}
+                >
+                  Upload image
+                </Button>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: "pointer", color: "red" }}
+                  onClick={() =>
+                    setEmployeeDetails({ ...employeeDetails, userImage: "" })
                   }
-                />
-                <Stack direction={"column"}>
-                  <Button
-                    size="small"
-                    component="label"
-                    htmlFor="userImage"
-                    startIcon={<PhotoCameraOutlinedIcon />}
-                  >
-                    Upload image
-                  </Button>
-                  <Button
-                    size="small"
-                    startIcon={<NoPhotographyOutlinedIcon />}
-                    onClick={() =>
-                      setEmployeeDetails({ ...employeeDetails, userImage: "" })
-                    }
-                  >
-                    Remove image
-                  </Button>
-                </Stack>
-
-                <input
-                  type={"file"}
-                  style={{ display: "none" }}
-                  id="userImage"
-                  onChange={handleImageUpload}
-                />
+                >
+                  Remove image
+                </Typography>
               </Stack>
 
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  label="Full Name"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.fullName}
-                  onChange={handleInputChange("fullName")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Employee ID"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.employeeId}
-                  onChange={handleInputChange("employeeId")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Date of Birth"
-                  type="date"
-                  variant="outlined"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={employeeDetails.dateOfBirth}
-                  onChange={handleInputChange("dateOfBirth")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Gender"
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.gender}
-                  onChange={handleInputChange("gender")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Marital Status"
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.maritalStatus}
-                  onChange={handleInputChange("maritalStatus")}
-                />
-              </Grid>
-            </Grid>
+              <input
+                type={"file"}
+                style={{ display: "none" }}
+                id="userImage"
+                onChange={handleImageUpload}
+              />
+            </Stack>
 
-            {/* CONTACT INFORMATION */}
-            <Grid container spacing={1} className={classes.groupContainer}>
-              <Typography
-                variant="body2"
-                gutterBottom
-                style={{ fontWeight: "bold", paddingLeft: 4 }}
-              >
-                Contact Information
-              </Typography>
-              <Grid item xs={12}>
-                <TextField
-                  label="Address"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  multiline
-                  rows={3}
-                  value={employeeDetails.address}
-                  onChange={handleInputChange("address")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Phone Number"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.phoneNumber}
-                  onChange={handleInputChange("phoneNumber")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Email Address"
-                  type="email"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.email}
-                  onChange={handleInputChange("email")}
-                />
-              </Grid>
-            </Grid>
-
-            {/* EMPLOYEMENT DETAILS */}
-            <Grid container spacing={1} className={classes.groupContainer}>
-              <Typography
-                variant="body2"
+            <Grid item xs={12} sm={6}>
+              <TextField
                 size="small"
-                gutterBottom
-                style={{ fontWeight: "bold", paddingLeft: 4 }}
-              >
-                Employment Information
-              </Typography>
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  label="Job Title"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.jobTitle}
-                  onChange={handleInputChange("jobTitle")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Date of Hire"
-                  variant="outlined"
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  fullWidth
-                  value={employeeDetails.dateOfHire}
-                  onChange={handleInputChange("dateOfHire")}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Department"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.department}
-                  onChange={handleInputChange("department")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Work Location"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.workLocation}
-                  onChange={handleInputChange("workLocation")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Manager / Supervisor"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.manager}
-                  onChange={handleInputChange("manager")}
-                />
-              </Grid>
+                label="Full Name"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.fullName}
+                onChange={handleInputChange("fullName")}
+              />
             </Grid>
-
-            {/* EMERGENCY CONTACT */}
-            <Grid container spacing={1} className={classes.groupContainer}>
-              <Typography
-                variant="body2"
+            <Grid item xs={12} sm={6}>
+              <TextField
                 size="small"
-                gutterBottom
-                style={{ fontWeight: "bold", paddingLeft: 4 }}
-              >
-                Emergency Information
-              </Typography>
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  label="Emergency contact name"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.emergencyPerson}
-                  onChange={handleInputChange("emergencyPerson")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Blood Group"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.bloodGroup}
-                  onChange={handleInputChange("bloodGroup")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Phone Number"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.emergencyPhoneNumber}
-                  onChange={handleInputChange("emergencyPhoneNumber")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  label="Relation"
-                  variant="outlined"
-                  fullWidth
-                  value={employeeDetails.emergencyRelation}
-                  onChange={handleInputChange("emergencyRelation")}
-                />
-              </Grid>
+                label="Employee ID"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.employeeId}
+                onChange={handleInputChange("employeeId")}
+              />
             </Grid>
-
-            {/* ASSETS */}
-            <Grid container spacing={1} className={classes.groupContainer}>
-              <Typography
-                variant="body2"
+            <Grid item xs={12} sm={6}>
+              <TextField
                 size="small"
-                gutterBottom
-                style={{ fontWeight: "bold", paddingLeft: 4 }}
-              >
-                Company Assets
-              </Typography>
-
-              <Grid item xs={12}>
-                <TextField
-                  label="Laptop"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  value={employeeDetails.laptop}
-                  onChange={handleInputChange("laptop")}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Laptop serial no:"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  value={employeeDetails.laptopSerialNo}
-                  onChange={handleInputChange("laptopSerialNo")}
-                />
-              </Grid>
+                label="Date of Birth"
+                type="date"
+                variant="outlined"
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={employeeDetails.dateOfBirth}
+                onChange={handleInputChange("dateOfBirth")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Gender"
+                size="small"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.gender}
+                onChange={handleInputChange("gender")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Marital Status"
+                size="small"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.maritalStatus}
+                onChange={handleInputChange("maritalStatus")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Blood Group"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.bloodGroup}
+                onChange={handleInputChange("bloodGroup")}
+              />
             </Grid>
           </Grid>
-          <Box className={classes.buttonGroup}>
-            <Button
-              type="button"
-              variant="outlined"
-              fullWidth
-              color="primary"
-              className={classes.submitButton}
-              onClick={handleSaveButton}
-            >
-              Save
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              color="primary"
-              className={classes.submitButton}
-            >
-              Submit
-            </Button>
-          </Box>
-        </form>
-      </Grid>
-    </Container>
+
+          {/* CONTACT INFORMATION */}
+          <Typography variant="body2" gutterBottom fontWeight={600}>
+            Contact Information
+          </Typography>
+          <Grid
+            container
+            rowSpacing={1.5}
+            columnSpacing={0}
+            className={classes.groupContainer}
+          >
+            <Grid item xs={12}>
+              <TextField
+                label="Address"
+                variant="outlined"
+                size="small"
+                fullWidth
+                multiline
+                rows={3}
+                value={employeeDetails.address}
+                onChange={handleInputChange("address")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Phone Number"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.phoneNumber}
+                onChange={handleInputChange("phoneNumber")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Email Address"
+                type="email"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.email}
+                onChange={handleInputChange("email")}
+              />
+            </Grid>
+          </Grid>
+
+          {/* EMPLOYEMENT DETAILS */}
+          <Typography
+            variant="body2"
+            size="small"
+            gutterBottom
+            fontWeight={600}
+          >
+            Employment Information
+          </Typography>
+          <Grid container rowSpacing={1.5} className={classes.groupContainer}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Job Title"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.jobTitle}
+                onChange={handleInputChange("jobTitle")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Date of Hire"
+                variant="outlined"
+                type="date"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
+                value={employeeDetails.dateOfHire}
+                onChange={handleInputChange("dateOfHire")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Department"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.department}
+                onChange={handleInputChange("department")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Work Location"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.workLocation}
+                onChange={handleInputChange("workLocation")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Manager / Supervisor"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.manager}
+                onChange={handleInputChange("manager")}
+              />
+            </Grid>
+          </Grid>
+
+          {/* EMERGENCY CONTACT */}
+          <Typography
+            variant="body2"
+            size="small"
+            gutterBottom
+            fontWeight={600}
+          >
+            Emergency Information
+          </Typography>
+          <Grid container rowSpacing={1.5} className={classes.groupContainer}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Emergency contact name"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.emergencyPerson}
+                onChange={handleInputChange("emergencyPerson")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Phone Number"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.emergencyPhoneNumber}
+                onChange={handleInputChange("emergencyPhoneNumber")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                size="small"
+                label="Relation"
+                variant="outlined"
+                fullWidth
+                value={employeeDetails.emergencyRelation}
+                onChange={handleInputChange("emergencyRelation")}
+              />
+            </Grid>
+          </Grid>
+
+          {/* ASSETS */}
+          <Typography
+            variant="body2"
+            size="small"
+            gutterBottom
+            fontWeight={600}
+          >
+            Company Assets
+          </Typography>
+          <Grid container rowSpacing={1.5} className={classes.groupContainer}>
+            <Grid item xs={12}>
+              <TextField
+                label="Laptop"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={employeeDetails.laptop}
+                onChange={handleInputChange("laptop")}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Laptop serial no:"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={employeeDetails.laptopSerialNo}
+                onChange={handleInputChange("laptopSerialNo")}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Box className={classes.buttonGroup}>
+          <Button
+            type="button"
+            variant="outlined"
+            fullWidth
+            color="primary"
+            className={classes.submitButton}
+            onClick={handleSaveButton}
+          >
+            Save
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            color="primary"
+            className={classes.submitButton}
+          >
+            Submit
+          </Button>
+        </Box>
+      </form>
+    </Box>
   );
 };
 
