@@ -13,15 +13,20 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
 import { submitEmployeeDetails } from "../../ApiCalls/apiCalls";
 
+const vertical = "top";
+const horizontal = "center";
+
 const App = () => {
   const classes = useStyles();
   const getLocalStorageItem = JSON.parse(localStorage.getItem("userDetails"));
-  // console.log(getLocalStorageItem);
-
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   //get user location
   /*   if ("geolocation" in navigator) {
     // Request the user's location
@@ -109,7 +114,52 @@ const App = () => {
     console.log("Submitted:", employeeDetails);
 
     const response = await submitEmployeeDetails(employeeDetails);
-    console.log(response, "from ui");
+    if (response.status === 200) {
+      setEmployeeDetails({
+        fullName: "",
+        dateOfBirth: "",
+        employeeId: "",
+        gender: "",
+        address: "",
+        phoneNumber: "",
+        email: "",
+        maritalStatus: "",
+        jobTitle: "",
+        dateOfHire: "",
+        department: "",
+        workLocation: "",
+        manager: "",
+        emergencyPerson: "",
+        bloodGroup: "",
+        emergencyPhoneNumber: "",
+        emergencyRelation: "",
+        laptop: "",
+        laptopSerialNo: "",
+        userImage: "",
+      });
+      localStorage.removeItem("userDetails");
+      setAlertMessage(response.data);
+      setShowAlert(true);
+    }
+  };
+
+  const renderAlertMessage = () => {
+    return (
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={6000}
+        onClose={() => setShowAlert(false)}
+        anchorOrigin={{ vertical, horizontal }}
+      >
+        <Alert
+          onClose={() => setShowAlert(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
+    );
   };
 
   return (
@@ -485,6 +535,7 @@ const App = () => {
           </Button>
         </Box>
       </form>
+      {showAlert && renderAlertMessage()}
     </Box>
   );
 };
