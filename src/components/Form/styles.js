@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -6,13 +6,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
-  submitButton: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(4),
-  },
   mainFormContainer: {
-    backgroundColor:"#EEEEEE",
-    borderRadius:4,
+    backgroundColor: "#EEEEEE",
+    borderRadius: 4,
     maxWidth: "80%",
     padding: 10,
     gap: 10,
@@ -21,14 +17,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#ffffff",
     borderRadius: 4,
     padding: "10px",
-    
   },
   buttonGroup: {
     display: "flex",
+    width: "80%",
     justifyContent: "space-evenly",
-    gap: 2,
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    marginTop: "10px",
+    marginBottom: "10px",
   },
 }));
 
